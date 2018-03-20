@@ -5,5 +5,13 @@
             "name": "Ade",
             "email": "code@adeattwood.co.uk"
         }
-    ]
+    ],
+    "require": {
+        "yiisoft/yii2": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "adeattwood\\errortracker\\": "src"
+        }
+    }
 }
