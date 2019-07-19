@@ -1,9 +1,9 @@
 {
-    "name": "adeattwood/yii2-error-tracker-log-target",
+    "name": "error-tracker/yii2-log-target",
     "authors": [
         {
             "name": "Ade",
-            "email": "code@adeattwood.co.uk"
+            "email": "ade@practically.io"
         }
     ],
     "require": {
@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "adeattwood\\errortracker\\": "src"
+            "ErrorTracker\\Yii2\\": "src"
         }
     }
 }

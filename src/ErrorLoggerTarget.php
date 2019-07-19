@@ -1,6 +1,6 @@
 <?php
 
-namespace adeattwood\errortracker;
+namespace ErrorTracker\Yii2;
 
 use Yii;
 use yii\log\Logger;
@@ -25,7 +25,7 @@ class ErrorLoggerTarget extends \yii\log\Target
      * 
      * @var string
      */
-    public $postUrl = 'https://erorr-tracking.adeattwood.co.uk/report';
+    public $postUrl = 'https://api.error-tracker.com/report';
 
     /**
      * Initializes the log target
