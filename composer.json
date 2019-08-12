@@ -1,17 +1,42 @@
 {
     "name": "error-tracker/yii2-log-target",
+    "repositories": [
+        {"type": "composer", "url": "https://asset-packagist.org"}
+    ],
+    "type": "library",
     "authors": [
         {
             "name": "Ade",
-            "email": "ade@practically.io"
+            "email": "ade@practically.io",
+            "role": "Developer",
+            "homepage": "https://practically.io"
         }
     ],
     "require": {
-        "yiisoft/yii2": "^2.0"
+        "yiisoft/yii2": "^2.0",
+        "error-tracker/php-sdk": "^0.1.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.8",
+        "phpunit/phpunit": "^7"
     },
     "autoload": {
         "psr-4": {
             "ErrorTracker\\Yii2\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ErrorTracker\\Yii2\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "lint": "phpcs --standard=psr2 src tests",
+        "beautify": "phpcbf --standard=psr2 src test",
+        "pre-commit": [
+            "@test",
+            "phpcs --standard=psr2 --warning-severity=10 src tests"
+        ]
     }
 }
