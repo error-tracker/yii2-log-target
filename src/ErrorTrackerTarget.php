@@ -2,55 +2,100 @@
 
 namespace ErrorTracker\Yii2;
 
+use ErrorTracker\Client;
+
 use Yii;
-use yii\log\Logger;
+use yii\helpers\VarDumper;
 use yii\log\LogRuntimeException;
+use yii\log\Logger;
 use yii\web\Request;
 
 /**
- * 
+ * Error Tracker log target
+ *
+ * @package   error-tracker/yii2-log-target
+ * @author    Ade Attwood <ade@practically.io>
+ * @copyright 2019 Practically.io
+ *
+ * @property Client $client
  */
-class ErrorLoggerTarget extends \yii\log\Target
+class ErrorTrackerTarget extends \yii\log\Target
 {
 
     /**
      * The application key for linking the error
-     * 
+     *
      * @var string
      */
     public $app_key = null;
 
     /**
-     * The url of the error logger application
-     * 
+     * The URL of the error tracker application
+     *
      * @var string
      */
-    public $postUrl = 'https://api.error-tracker.com/report';
+    public $postUrl = '';
+
+    /**
+     * The internal error tracker client to reporting the errors
+     *
+     * @var Client|null
+     */
+    private $client = null;
 
     /**
      * Initializes the log target
-     * 
+     *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
-        if ($this->app_key === null) {
+        parent::init();
+
+        if ($this->client === null && $this->app_key === null) {
             throw new LogRuntimeException('app_key must be set');
         }
+    }
 
-        return parent::init();
+    /**
+     * Gets the internal instance of the error tracker client. If it is not set
+     * it will set up the default client to interact with the error tracker API
+     *
+     * @return Client
+     */
+    public function getClient(): Client
+    {
+
+        if ($this->client === null) {
+            $this->client = new Client($this->app_key);
+        }
+
+        return $this->client;
+    }
+
+    /**
+     * Set the internal client
+     *
+     * @see self::setClient()
+     *
+     * @return void
+     */
+    public function setClient(?Client $client): void
+    {
+        $this->client = $client;
     }
 
     /**
      * Exports the error and send it so error logger
-     * 
+     *
      * @return void
      */
-    public function export()
+    public function export(): void
     {
         foreach ($this->messages as $message) {
             list($text, $level, $category, $timestamp) = $message;
-            
+
+
             if ($level > $this->getLevels()) {
                 continue;
             }
@@ -72,6 +117,7 @@ class ErrorLoggerTarget extends \yii\log\Target
             }
 
 
+
             $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
             if ($user && ($identity = $user->getIdentity(false))) {
                 $userID = $identity->getId();
@@ -84,8 +130,7 @@ class ErrorLoggerTarget extends \yii\log\Target
 
             $request = Yii::$app->getRequest();
 
-            $data = [
-                'app_key' => $this->app_key,
+            $this->getClient()->report([
                 'type' => $level === Logger::LEVEL_ERROR ? 1 : 2,
                 'name' => $category,
                 'text' => $text,
@@ -96,21 +141,7 @@ class ErrorLoggerTarget extends \yii\log\Target
                 'url' => ($request instanceof Request) ? $request->getAbsoluteUrl() : 'null',
                 'user_agent' => $request instanceof Request ? $request->getUserAgent() : 'null',
                 'ip' => $request instanceof Request ? $request->getUserIP() : 'null'
-            ];
-
-            $ch = curl_init($this->postUrl);
-
-            curl_setopt_array($ch, [
-                CURLOPT_POST => true,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HTTPHEADER => [
-                    'Content-Type: application/json'
-                ],
-                CURLOPT_POSTFIELDS => json_encode($data)
             ]);
-
-            $response = curl_exec($ch);
         }
     }
-
 }
