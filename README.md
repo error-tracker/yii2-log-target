@@ -4,11 +4,11 @@
 
 This is for Yii2 developers that need to integrate their applications with
 [Error Tracker](https://error-tracker.com). This extension uses the Yii2 log
-component to send errors and warnings to Error Tracker.
+component to send errors and warnings direct to Error Tracker.
 
 ## Installation
 
-You can install this package with composer.
+Install this package with composer.
 
 ```bash
 composer require error-tracker/yii2-log-target
@@ -18,9 +18,9 @@ composer require error-tracker/yii2-log-target
 
 To configure the [log
 target](https://www.yiiframework.com/doc/guide/2.0/en/runtime-logging#log-targets)
-in your application you can add the below config, then when ever there is a
-server side error it will be added to the file log as it normally would, and be
-sent to error tracker where you can see it on the site.
+in your application, add the below config. Whenever there is a
+server side error this will be added to the file log as it normally would. Additionally this will be
+sent to the error tracker dashboard, for easy searches, alerts and other handy tools.
 
 ```php
 'log' => [
@@ -38,9 +38,9 @@ sent to error tracker where you can see it on the site.
 ],
 ```
 
-When your error is reported onto Error Tracker, it will be saved with a
-`Reference`. This is your users session id. This is also the id you can use to
-trace the error in your file log where you can find more information about the
+When an error is reported onto Error Tracker, it will be saved with a
+`Reference`. This is your user's session id, and is also the id you can use to
+trace the error in your file log where you can find more information about that error
 error.
 
 ## Using Yii2's log functions
@@ -48,7 +48,7 @@ error.
 You can use Yii2's [error and
 warning](https://www.yiiframework.com/doc/guide/2.0/en/runtime-logging#log-messages)
 methods to log errors to Error Tracker without throwing exceptions. This will
-still be logged in the same was and automatically sent if you have your log
+still be logged in the same way, and will additionally and automatically sent if you have the log
 target configured. The below code will send an error without throwing an
 exception.
 
@@ -62,10 +62,10 @@ try {
 
 ## Disabling
 
-You can disable your log target by using the [method documented by
+Disable your log target by using the [method documented by
 Yii2](https://www.yiiframework.com/doc/guide/2.0/en/runtime-logging#toggling-log-targets).
-You can also disable the target by setting the `enabled` property in the
-configuration. The below config will only enable the logger if your application
+Optionally disable the target by setting the `enabled` property in the
+configuration. The below config only enables the logger if your application
 is in a production environment.
 
 ```php
@@ -104,7 +104,7 @@ composer run-script lint
 
 ### Pull Requests
 
-Before you create a pull request with you changes, the pre-commit script must
+Before creating a pull request with your changes, the pre-commit script must
 pass. That can be run as follows:
 
 ```bash
